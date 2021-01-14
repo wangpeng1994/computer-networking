@@ -1,6 +1,6 @@
 from socket import *
 
-serverName = '104.194.87.72'
+serverName = 'localhost'
 serverPort = 8000
 
 # 创建套接字，AF_INET 指示底层网络使用 IPv4，SOCK_DGRAM 是一种 UDP 套接字类型
@@ -15,4 +15,5 @@ modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
 print(modifiedMessage.decode())
 # 关闭套接字和进程
 clientSocket.close()
+
 
