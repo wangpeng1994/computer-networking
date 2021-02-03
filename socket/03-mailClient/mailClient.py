@@ -25,7 +25,7 @@ sock = socket(AF_INET, SOCK_STREAM)
 
 # 可选，为 tcp socket 添加 TLS/SSL 支持
 context = ssl.create_default_context()
-clientSocket = context.wrap_socket(sock, server_side=False):
+clientSocket = context.wrap_socket(sock, server_side=False)
 
 clientSocket.connect(mailserver, 25)
 #Fill in end
