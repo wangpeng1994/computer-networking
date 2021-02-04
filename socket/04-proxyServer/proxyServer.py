@@ -30,7 +30,7 @@ while 1:
         outputdata = f.read()
         fileExist = "true"
         # ProxyServer finds a cache hit and generates a response message
-        tcpCliSock.send('HTTP/1.0 200 OK\r\n'.encode())
+        tcpCliSock.send('HTTP/1.1 200 OK\r\n'.encode())
         tcpCliSock.send('Content-Type:text/html\r\n\r\n'.encode())
         tcpCliSock.send(outputdata)
         print('Read from cache')
@@ -50,7 +50,8 @@ while 1:
                 print('askFile: ', askFile)
                 # Create a temporary file on this socket and ask port 80 for the file requested by the client
                 fileobj = c.makefile('rwb', 0)
-                requestLine = 'GET %s HTTP/1.0\r\nHost: %s\r\n\r\n' % (askFile, serverName)
+                # 可进一步判断扩展出支持转发POST请求（略）
+                requestLine = 'GET %s HTTP/1.1\r\nHost: %s\r\n\r\n' % (askFile, serverName)
                 fileobj.write(requestLine.encode())
                 print('requestLine: ', requestLine)
                 # Read the response into buffer
@@ -58,6 +59,12 @@ while 1:
                 reponseBody = response.split(b'\r\n\r\n')[1]
                 print('response:\n', response)
                 print('reponseBody:\n', reponseBody)
+                if response.split()[1] == b'404':
+                    print('404')
+                    tcpCliSock.send(response)
+                    # tcpCliSock.send("HTTP/1.1 404 Not Found\r\n\r\n".encode())
+                    tcpCliSock.close()
+                    continue
                 # Create a new file in the cache for the requested file.
                 # Also send the response in the buffer to client socket and the corresponding file in the cache
                 filename = "web_cache/" + filename
